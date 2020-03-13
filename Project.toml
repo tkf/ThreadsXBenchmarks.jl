@@ -3,7 +3,25 @@ uuid = "b2980a5c-e050-44cc-9034-128659d9d5fd"
 authors = ["Takafumi Arakaki <aka.tkf@gmail.com>"]
 version = "0.1.0"
 
+[deps]
+ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
+AtBackslash = "04ea9a2a-9613-4550-8ec7-b0cad5b6b706"
+BangBang = "198e06fe-97b7-11e9-32a5-e1d131e6ad66"
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Referenceables = "42d2dcc6-99eb-4e98-b66c-637b7d73030e"
+Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+ThreadsX = "ac1d9e8a-700a-412c-b207-f0111f4b6c0d"
+Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
+
 [compat]
+ProgressLogging = "0.1.2"
+Setfield = "0.5.3, 0.6"
 julia = "1"
 
 [extras]
