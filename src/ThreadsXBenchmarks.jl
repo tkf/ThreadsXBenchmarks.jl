@@ -110,7 +110,7 @@ function run_all(
     default_nthreads::Integer = maximum(nthreads_range),
 )
     run_nthreads(outdir; nthreads_range = nthreads_range)
-    run_datasize(outdir; nthreads = default_nthreads)
+    # run_datasize(outdir; nthreads = default_nthreads)
     return
 end
 
