@@ -2,8 +2,10 @@ using AtBackslash: @\
 using DataFrames
 using Glob
 using NamedTupleTools: @namedtuple
+using Statistics
 using ThreadsXBenchmarks
 using UnPack: @unpack
+using VegaLite
 
 loadall(datadir) = (
     sort_target = copy(
@@ -66,6 +68,13 @@ function plotall(data; agg = median)
         df
     end
 
+    # Smaller `datasize` look better:
+    sort_normalized = sort_normalized[sort_normalized.datasize.==1_000_000, :]
+
+    # Larger `datasize` look better:
+    fold_normalized = fold_normalized[fold_normalized.datasize_label.==2, :]
+
+    sort_raw_plot = nothing
     sort_raw_plot = @vlplot(
         mark = {type = :point, tooltip = true},
         x = :nthreads,
@@ -77,12 +86,27 @@ function plotall(data; agg = median)
     )
 
     sort_agg_plot = @vlplot(
-        mark = {type = :point, tooltip = true},
-        x = :nthreads,
-        y = {field = :speedup, axis = {title = "$agg(speedup)"}},
-        color = :alg,
-        row = :distribution,
-        column = :datasize,
+        facet = {
+            column = {field = :distribution, type = :nominal},
+            # row = {field = :datasize, type = :nominal},
+        },
+        spec = {
+            layer = [
+                {
+                    mark = {type = :point, tooltip = true},
+                    encoding = {
+                        x = {field = :nthreads},
+                        y = {field = :speedup, axis = {title = "$agg(speedup)"}},
+                        color = {field = :alg},
+                    },
+                },
+                {
+                    mark = {type = :rule, color = :black},
+                    data = {values = [{ref = 1}]},
+                    encoding = {y = {field = :ref, type = :quantitative}},
+                },
+            ],
+        },
         data = by(
             sort_normalized,
             [:nthreads, :basesize, :alg, :distribution, :datasize];
@@ -101,16 +125,22 @@ function plotall(data; agg = median)
     )
 
     fold_agg_plot = @vlplot(
-        mark = {type = :point, tooltip = true},
-        x = :nthreads,
-        y = {field = :speedup, axis = {title = "$agg(speedup)"}},
-        color = :benchname,
-        column = :datasize_label,
-        data = by(
-            fold_normalized,
-            [:nthreads, :benchname, :datasize_label];
-            speedup = :speedup => agg,
-        ),
+        layer = [
+            {
+                mark = {type = :point, tooltip = true},
+                encoding = {
+                    x = {field = :nthreads},
+                    y = {field = :speedup, axis = {title = "$agg(speedup)"}},
+                    color = {field = :benchname},
+                },
+            },
+            {
+                mark = {type = :rule, color = :black},
+                data = {values = [{ref = 1}]},
+                encoding = {y = {field = :ref, type = :quantitative}},
+            },
+        ],
+        data = by(fold_normalized, [:nthreads, :benchname]; speedup = :speedup => agg),
     )
 
     return @namedtuple(data..., sort_raw_plot, sort_agg_plot, fold_raw_plot, fold_agg_plot)
