@@ -39,7 +39,7 @@ const BENCHMARKS = Dict{Symbol,NamedTuple{(:prepare, :run, :paramasdata, :parama
                 (label = "narrow", value = 0:0.01:1),
             ],
             alg = [
-                (label = "ThreadsX.MergeSort", value = ThreadsX.MergeSort),
+                # (label = "ThreadsX.MergeSort", value = ThreadsX.MergeSort),
                 (label = "ThreadsX.QuickSort", value = ThreadsX.QuickSort),
             ],
             basesize = [nothing],
@@ -95,6 +95,9 @@ function main(
 )
     @argcheck length(ARGS) == 1
     outputstem, = ARGS
+
+    # Run only sort benchmarks:
+    benchmark_definitions = Dict(:sort => benchmark_definitions[:sort])
 
     benchmarks = []
     @progress "Benchmark" for (benchname, bench) in benchmark_definitions
