@@ -33,7 +33,7 @@ const BENCHMARKS = Dict{Symbol,NamedTuple{(:prepare, :run, :paramasdata, :parama
                 smallsize = p.smallsize,
             ),
         paramaxes = (
-            datasize = [1_000_000, 10_000_000],
+            datasize = [1_000_000],
             dist = [
                 (label = "wide", value = Float64),
                 (label = "narrow", value = 0:0.01:1),
@@ -55,13 +55,13 @@ const BENCHMARKS = Dict{Symbol,NamedTuple{(:prepare, :run, :paramasdata, :parama
         end,
         run = (p, r) -> ThreadsX.foreach(setavg!, referenceable(r.A), r.B, r.B'),
         paramasdata = identity,
-        paramaxes = (datasize = [2000, 6000],),
+        paramaxes = (datasize = [6000],),
     ),
     :sum_sin => (
         prepare = (p, rng) -> 1:p.datasize,
         run = (p, r) -> ThreadsX.sum(sin, r),
         paramasdata = identity,
-        paramaxes = (datasize = [1_000_000, 10_000_000],),
+        paramaxes = (datasize = [10_000_000],),
     ),
     :findfirst => (
         prepare = function (p, rng)
@@ -71,13 +71,13 @@ const BENCHMARKS = Dict{Symbol,NamedTuple{(:prepare, :run, :paramasdata, :parama
         end,
         run = (p, r) -> ThreadsX.findfirst(==(-1), r),
         paramasdata = identity,
-        paramaxes = (datasize = [2^22, 2^26],),
+        paramaxes = (datasize = [2^26],),
     ),
     :unique => (
         prepare = (p, rng) -> rand(rng, 1:10, p.datasize),
         run = (p, r) -> ThreadsX.unique(r),
         paramasdata = identity,
-        paramaxes = (datasize = [1_000_000, 10_000_000],),
+        paramaxes = (datasize = [10_000_000],),
     ),
 )
 
@@ -110,7 +110,6 @@ function main(
                     rng = $(MersenneTwister(1234))
                     r = $(bench.prepare)(p, rng)
                 end,
-                seconds = 20.0,
             )
             BenchmarkTools.warmup(b)
             BenchmarkTools.tune!(b; verbose = true)
