@@ -68,13 +68,6 @@ function plotall(data; agg = median)
         df
     end
 
-    # Smaller `datasize` look better:
-    sort_normalized = sort_normalized[sort_normalized.datasize.==1_000_000, :]
-
-    # Larger `datasize` look better:
-    fold_normalized = fold_normalized[fold_normalized.datasize_label.==2, :]
-
-    sort_raw_plot = nothing
     sort_raw_plot = @vlplot(
         mark = {type = :point, tooltip = true},
         x = :nthreads,
